@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduBot Admin — College Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070d; --s1:#0b0e16; --s2:#11151e; --s3:#171c27;
+  --border:#1a2030; --border2:#222a3a;
+  --gold:#f59e0b; --violet:#8b5cf6; --emerald:#10d98b; --rose:#f43f5e; --cyan:#00d4ff; --blue:#3b82f6;
+  --text:#dde3f0; --muted:#4e5a70; --muted2:#7a8599;
+  --sidebar:260px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle at 10% 10%,rgba(245,158,11,.04) 0%,transparent 45%),
+    radial-gradient(circle at 90% 90%,rgba(139,92,246,.04) 0%,transparent 45%),
+    linear-gradient(rgba(245,158,11,.01) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(245,158,11,.01) 1px,transparent 1px);
+  background-size:100% 100%,100% 100%,48px 48px,48px 48px;pointer-events:none;z-index:0;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+
+/* ══ LOGIN SCREEN ══ */
+#loginScreen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.login-card{background:var(--s1);border:1px solid var(--border2);border-radius:24px;padding:44px;
+  max-width:420px;width:94%;display:flex;flex-direction:column;gap:22px;
+  box-shadow:0 0 80px rgba(245,158,11,.1),inset 0 1px 0 rgba(255,255,255,.04);
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;}
+.login-brand{display:flex;align-items:center;gap:14px;}
+.login-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--gold),var(--violet));border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:0 0 24px rgba(245,158,11,.35);flex-shrink:0;}
+.login-title{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+.login-title em{color:var(--gold);font-style:normal;}
+.login-sub{font-size:12px;color:var(--muted2);}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+.inp{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;
+  color:var(--text);font-family:'Space Mono',monospace;font-size:13px;outline:none;width:100%;transition:border-color .2s;}
+.inp:focus{border-color:var(--gold);}
+.inp::placeholder{color:var(--muted);}
+.pw-wrap{position:relative;} .pw-wrap .inp{padding-right:46px;}
+.pw-eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--violet));border:none;border-radius:11px;
+  padding:14px;color:#000;font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;
+  cursor:pointer;transition:all .2s;box-shadow:0 0 24px rgba(245,158,11,.25);}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 0 36px rgba(245,158,11,.4);}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.login-err{color:var(--rose);font-size:12px;font-family:'Space Mono',monospace;display:none;
+  padding:8px 12px;background:rgba(244,63,94,.07);border-radius:8px;border:1px solid rgba(244,63,94,.2);}
+.login-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:center;}
+.login-note a{color:var(--gold);text-decoration:none;}
+
+/* ══ HEADER ══ */
+header{position:relative;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;height:58px;background:rgba(11,14,22,.95);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--violet));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 0 16px rgba(245,158,11,.35);}
+.logo-name{font-size:18px;font-weight:800;letter-spacing:-.5px;}
+.logo-name em{color:var(--gold);font-style:normal;}
+.logo-sub{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.admin-badge{display:flex;align-items:center;gap:7px;background:rgba(245,158,11,.08);
+  border:1px solid rgba(245,158,11,.25);border-radius:20px;padding:5px 14px;
+  font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);}
+.hbtn{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:5px 13px;
+  font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);cursor:pointer;transition:all .2s;}
+.hbtn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ══ LAYOUT ══ */
+.root{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--s1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-top{padding:16px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+.s-sec{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;padding:12px 8px 5px;text-transform:uppercase;}
+.snav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1px solid transparent;
+  background:transparent;color:var(--muted2);cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;
+  font-weight:600;transition:all .18s;text-align:left;width:100%;}
+.snav:hover{background:var(--s2);color:var(--text);}
+.snav.active{background:var(--s2);border-color:var(--border);color:var(--gold);}
+.snav .si{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.divider{height:1px;background:var(--border);margin:4px 0;}
+
+/* ══ MAIN ══ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.panel{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:28px 32px;gap:22px;}
+.panel.active{display:flex;}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;flex-shrink:0;}
+.panel-hdr h2{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+.panel-hdr h2 em{color:var(--gold);font-style:normal;}
+
+/* ══ CARDS ══ */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;flex-shrink:0;}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.07;}
+.stat-card.c-gold::after{background:var(--gold);}
+.stat-card.c-emerald::after{background:var(--emerald);}
+.stat-card.c-rose::after{background:var(--rose);}
+.stat-card.c-violet::after{background:var(--violet);}
+.stat-card .lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;}
+.stat-card .val{font-size:28px;font-weight:800;margin-top:8px;letter-spacing:-.5px;}
+.stat-card.c-gold .val{color:var(--gold);}
+.stat-card.c-emerald .val{color:var(--emerald);}
+.stat-card.c-rose .val{color:var(--rose);}
+.stat-card.c-violet .val{color:var(--violet);}
+.stat-card .sub{font-size:12px;color:var(--muted2);margin-top:4px;}
+
+/* ══ TABLE ══ */
+.tbl-wrap{background:var(--s1);border:1px solid var(--border);border-radius:15px;overflow:hidden;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{padding:12px 16px;text-align:left;font-family:'Space Mono',monospace;font-size:9px;
+  color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;background:var(--s2);border-bottom:1px solid var(--border);}
+.tbl td{padding:12px 16px;border-bottom:1px solid rgba(26,32,48,.5);}
+.tbl tr:last-child td{border:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.015);}
+.mono{font-family:'Space Mono',monospace;font-size:11px;}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;}
+.b-active{background:rgba(16,217,139,.1);color:var(--emerald);border:1px solid rgba(16,217,139,.2);}
+.b-inactive{background:rgba(244,63,94,.1);color:var(--rose);border:1px solid rgba(244,63,94,.2);}
+.b-paid{background:rgba(16,217,139,.1);color:var(--emerald);border:1px solid rgba(16,217,139,.2);}
+.b-partial{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);}
+.b-unpaid{background:rgba(244,63,94,.1);color:var(--rose);border:1px solid rgba(244,63,94,.2);}
+.b-overdue{background:rgba(244,63,94,.18);color:var(--rose);border:1px solid rgba(244,63,94,.35);}
+.b-info{background:rgba(59,130,246,.1);color:var(--blue);border:1px solid rgba(59,130,246,.2);}
+.b-warn{background:rgba(245,158,11,.1);color:var(--gold);border:1px solid rgba(245,158,11,.2);}
+.tbl-action{background:none;border:1px solid var(--border);border-radius:7px;padding:3px 10px;
+  color:var(--muted2);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;
+  transition:all .2s;margin-right:4px;}
+.tbl-action:hover{border-color:var(--gold);color:var(--gold);}
+.tbl-action.danger:hover{border-color:var(--rose);color:var(--rose);}
+
+/* ══ FORMS & MODALS ══ */
+.form-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.form-row{display:flex;gap:10px;align-items:flex-end;}
+.btn{padding:10px 20px;border-radius:10px;border:1px solid var(--border);background:var(--s2);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn.primary{background:linear-gradient(135deg,var(--gold),var(--violet));border:none;color:#000;font-weight:800;}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,158,11,.3);}
+.btn.danger{border-color:rgba(244,63,94,.3);color:var(--rose);background:rgba(244,63,94,.06);}
+.btn.danger:hover{border-color:var(--rose);}
+.sel{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;
+  color:var(--text);font-family:'Space Mono',monospace;font-size:12px;outline:none;cursor:pointer;transition:border-color .2s;width:100%;}
+.sel:focus{border-color:var(--gold);}
+.search-bar{display:flex;gap:10px;align-items:center;}
+.search-bar .inp{width:280px;font-size:12px;padding:10px 14px;}
+
+/* ══ MODAL OVERLAY ══ */
+.modal-overlay{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--s1);border:1px solid var(--border2);border-radius:20px;padding:32px;
+  max-width:520px;width:94%;display:flex;flex-direction:column;gap:18px;
+  box-shadow:0 0 60px rgba(245,158,11,.1);animation:popIn .3s ease both;}
+.modal-box h3{font-size:18px;font-weight:800;}
+.modal-box h3 em{color:var(--gold);font-style:normal;}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;}
+.modal-err{color:var(--rose);font-size:12px;font-family:'Space Mono',monospace;display:none;
+  padding:7px 12px;background:rgba(244,63,94,.07);border-radius:8px;border:1px solid rgba(244,63,94,.2);}
+.modal-ok{color:var(--emerald);font-size:12px;font-family:'Space Mono',monospace;display:none;
+  padding:7px 12px;background:rgba(16,217,139,.07);border-radius:8px;border:1px solid rgba(16,217,139,.2);}
+
+/* ══ ANNOUNCEMENTS ══ */
+.ann-card{background:var(--s1);border:1px solid var(--border);border-radius:13px;padding:18px;
+  display:flex;gap:14px;align-items:flex-start;}
+.ann-icon{font-size:20px;flex-shrink:0;}
+.ann-title{font-size:14px;font-weight:700;margin-bottom:3px;}
+.ann-body{font-size:13px;color:var(--muted2);line-height:1.5;}
+.ann-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;}
+.ann-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;
+  padding:4px;margin-left:auto;flex-shrink:0;transition:color .2s;}
+.ann-del:hover{color:var(--rose);}
+
+/* ══ CHAT ══ */
+.chat-wrap{background:var(--s1);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:400px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
+.cmsg{display:flex;gap:10px;animation:fadeUp .3s ease both;}
+.cmsg.user{flex-direction:row-reverse;}
+.cav{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.cbubble{max-width:72%;padding:11px 15px;border-radius:13px;font-size:13px;line-height:1.65;}
+.cmsg.bot .cbubble{background:var(--s2);border:1px solid var(--border);}
+.cmsg.user .cbubble{background:var(--s3);border:1px solid var(--border2);}
+.cbubble strong{color:var(--gold);}
+.chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);}
+.chat-inp{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:11px;
+  padding:11px 15px;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;
+  outline:none;resize:none;min-height:44px;max-height:120px;transition:border-color .2s;}
+.chat-inp:focus{border-color:var(--gold);}
+.chat-send{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--violet));
+  border:none;color:#000;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.typing-ind{display:flex;gap:5px;padding:12px 16px;}
+.typing-ind span{width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.3;animation:blink 1.2s infinite;}
+.typing-ind span:nth-child(2){animation-delay:.2s} .typing-ind span:nth-child(3){animation-delay:.4s}
+
+/* ══ UTILITIES ══ */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(245,158,11,.2);
+  border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px;}
+.empty{text-align:center;padding:36px;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.sidebar{display:none;}.panel{padding:16px;}.stat-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ══ ADMIN LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-icon">🏛️</div>
+      <div>
+        <div class="login-title">Admin <em>Portal</em></div>
+        <div class="login-sub">ABC Engineering College · EduBot</div>
+      </div>
+    </div>
+    <div class="field"><label>Username</label><input class="inp" id="adminUser" type="text" placeholder="admin" autocomplete="username"></div>
+    <div class="field"><label>Password</label>
+      <div class="pw-wrap">
+        <input class="inp" id="adminPass" type="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="pw-eye" onclick="togglePw()">👁️</button>
+      </div>
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn-gold" id="loginBtn" onclick="doAdminLogin()">🔐 Sign In as Admin</button>
+    <div class="login-note">
+      Credentials are stored in <code style="background:var(--s2);padding:1px 6px;border-radius:4px;font-size:10px">.env</code> on the server<br>
+      <a href="/student.html">← Student Portal</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">🏛️</div>
+    <div><div class="logo-name">EduBot <em>Admin</em></div><div class="logo-sub">College Management Console</div></div>
+  </div>
+  <div class="hdr-right">
+    <div class="admin-badge">🔑 <span id="adminLabel">—</span></div>
+    <button class="hbtn" onclick="doLogout()">⏏ Sign Out</button>
+  </div>
+</header>
+
+<!-- ══ ROOT ══ -->
+<div class="root">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="s-sec">Dashboard</div>
+      <button class="snav active" id="nav-dash" onclick="showPanel('dash',this)"><span class="si">📊</span> Overview</button>
+      <div class="s-sec">Management</div>
+      <button class="snav" id="nav-students" onclick="showPanel('students',this)"><span class="si">🎓</span> Students</button>
+      <button class="snav" id="nav-fees" onclick="showPanel('fees',this)"><span class="si">💰</span> Fee Records</button>
+      <button class="snav" id="nav-ann" onclick="showPanel('ann',this)"><span class="si">📢</span> Announcements</button>
+      <div class="s-sec">Tools</div>
+      <button class="snav" id="nav-addstudent" onclick="showPanel('addstudent',this)"><span class="si">➕</span> Add Student</button>
+      <button class="snav" id="nav-payment" onclick="showPanel('payment',this)"><span class="si">🧾</span> Record Payment</button>
+      <button class="snav" id="nav-chat" onclick="showPanel('chat',this)"><span class="si">🤖</span> AI Assistant</button>
+      <div class="divider"></div>
+      <button class="snav" onclick="window.open('/student.html','_blank')"><span class="si">🎓</span> Student Portal ↗</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="panel active" id="dashPanel">
+      <div class="panel-hdr">
+        <h2>📊 <em>Overview</em></h2>
+        <button class="btn" onclick="loadDashboard()">↺ Refresh</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card c-gold"><div class="lbl">Total Students</div><div class="val" id="ds-total">—</div><div class="sub">Active enrollments</div></div>
+        <div class="stat-card c-emerald"><div class="lbl">Total Collected</div><div class="val" id="ds-paid">—</div><div class="sub">All payments</div></div>
+        <div class="stat-card c-rose"><div class="lbl">Outstanding Due</div><div class="val" id="ds-due">—</div><div class="sub">Pending balances</div></div>
+        <div class="stat-card c-violet"><div class="lbl">Fully Paid</div><div class="val" id="ds-pct">—</div><div class="sub">Students cleared</div></div>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">📢 Recent Announcements</div>
+        <div id="dashAnn" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--gold);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">💰 Fee Collection Summary</div>
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th>Roll No</th><th>Name</th><th>Dept</th><th>Demanded</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+          <tbody id="dashFeeTable"><tr><td colspan="7" class="empty"><span class="spin"></span> Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ══ STUDENTS ══ -->
+    <div class="panel" id="studentsPanel">
+      <div class="panel-hdr">
+        <h2>🎓 <em>Students</em></h2>
+        <div class="search-bar">
+          <input class="inp" id="stuSearch" type="text" placeholder="Search name, roll, email…" oninput="filterStudents()">
+          <select class="sel" id="stuDept" onchange="filterStudents()" style="width:140px">
+            <option value="">All Depts</option>
+            <option value="CS">CS</option><option value="IT">IT</option>
+            <option value="ECE">ECE</option><option value="EEE">EEE</option>
+            <option value="MECH">MECH</option><option value="MBA">MBA</option><option value="MCA">MCA</option>
+          </select>
+          <button class="btn primary" onclick="showPanel('addstudent',document.getElementById('nav-addstudent'))">+ Add</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Roll No</th><th>Name</th><th>Dept</th><th>Sem</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="stuTable"><tr><td colspan="7" class="empty"><span class="spin"></span> Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- ══ FEE RECORDS ══ -->
+    <div class="panel" id="feesPanel">
+      <div class="panel-hdr">
+        <h2>💰 <em>Fee Records</em></h2>
+        <div style="display:flex;gap:10px">
+          <select class="sel" id="feeYr" onchange="loadFeeRecords()" style="width:130px">
+            <option value="2024-25">2024–25</option><option value="2023-24">2023–24</option>
+          </select>
+          <button class="btn" onclick="loadFeeRecords()">↺ Refresh</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Roll No</th><th>Name</th><th>Dept</th><th>Demanded</th><th>Paid</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="feeTable"><tr><td colspan="8" class="empty"><span class="spin"></span> Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- ══ ANNOUNCEMENTS ══ -->
+    <div class="panel" id="annPanel">
+      <div class="panel-hdr"><h2>📢 <em>Announcements</em></h2></div>
+      <div class="form-card" style="max-width:600px">
+        <h3 style="font-size:15px;font-weight:700">Post New Announcement</h3>
+        <div class="field"><label>Title</label><input class="inp" id="annTitle" type="text" placeholder="e.g. Fee Due Reminder"></div>
+        <div class="field"><label>Message</label><textarea class="inp" id="annBody" rows="3" style="resize:none" placeholder="Write the announcement body…"></textarea></div>
+        <div class="field"><label>Type</label>
+          <select class="sel" id="annType">
+            <option value="info">ℹ️ Info</option>
+            <option value="warning">⚠️ Warning</option>
+            <option value="success">✅ Success</option>
+          </select>
+        </div>
+        <div class="modal-err" id="annErr"></div>
+        <div class="modal-ok" id="annOk"></div>
+        <button class="btn primary" onclick="postAnn()">📢 Post Announcement</button>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--muted2);margin-bottom:10px">EXISTING ANNOUNCEMENTS</div>
+        <div id="annList" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- ══ ADD STUDENT ══ -->
+    <div class="panel" id="addstudentPanel">
+      <div class="panel-hdr"><h2>➕ <em>Add Student</em></h2></div>
+      <div class="form-card" style="max-width:700px">
+        <div class="form-grid">
+          <div class="field"><label>Roll Number *</label><input class="inp" id="ns-roll" type="text" placeholder="22CS001"></div>
+          <div class="field"><label>Full Name *</label><input class="inp" id="ns-name" type="text" placeholder="Full Name"></div>
+          <div class="field"><label>Email *</label><input class="inp" id="ns-email" type="email" placeholder="student@college.edu.in"></div>
+          <div class="field"><label>Phone</label><input class="inp" id="ns-phone" type="tel" placeholder="9876543210"></div>
+          <div class="field"><label>Department *</label>
+            <select class="sel" id="ns-dept">
+              <option value="CS">CS</option><option value="IT">IT</option><option value="ECE">ECE</option>
+              <option value="EEE">EEE</option><option value="MECH">MECH</option><option value="CIVIL">CIVIL</option>
+              <option value="MBA">MBA</option><option value="MCA">MCA</option>
+            </select>
+          </div>
+          <div class="field"><label>Program</label>
+            <select class="sel" id="ns-prog"><option value="UG">UG</option><option value="PG">PG</option><option value="PhD">PhD</option></select>
+          </div>
+          <div class="field"><label>Semester</label>
+            <select class="sel" id="ns-sem"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select>
+          </div>
+          <div class="field"><label>Academic Year</label>
+            <select class="sel" id="ns-yr"><option value="2024-25">2024–25</option><option value="2023-24">2023–24</option></select>
+          </div>
+          <div class="field"><label>Password *</label>
+            <div class="pw-wrap"><input class="inp" id="ns-pw" type="password" placeholder="Min 8 chars"><button class="pw-eye" onclick="togglePwById('ns-pw')">👁️</button></div>
+          </div>
+        </div>
+        <div class="modal-err" id="nsErr"></div>
+        <div class="modal-ok" id="nsOk"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn primary" onclick="addStudent()">✅ Add Student</button>
+          <button class="btn" onclick="clearAddForm()">✕ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RECORD PAYMENT ══ -->
+    <div class="panel" id="paymentPanel">
+      <div class="panel-hdr"><h2>🧾 <em>Record Payment</em></h2></div>
+      <div class="form-card" style="max-width:600px">
+        <p style="color:var(--muted2);font-size:13px">Record a cash/offline payment made by a student at the fees counter.</p>
+        <div class="field"><label>Student Roll Number *</label><input class="inp" id="pay-roll" type="text" placeholder="22CS001" oninput="lookupStudent()"></div>
+        <div id="pay-student-info" style="display:none;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px;color:var(--muted2)"></div>
+        <div class="form-grid">
+          <div class="field"><label>Fee Type *</label>
+            <select class="sel" id="pay-type">
+              <option value="TUITION">Tuition Fee</option><option value="EXAM">Exam Fee</option>
+              <option value="LIBRARY">Library Fee</option><option value="LAB">Lab Fee</option>
+              <option value="HOSTEL">Hostel Fee</option><option value="MESS">Mess Fee</option>
+              <option value="BUS">Bus/Transport</option><option value="SPORTS">Sports Fee</option>
+              <option value="MISC">Miscellaneous</option><option value="FINE">Fine/Penalty</option>
+            </select>
+          </div>
+          <div class="field"><label>Academic Year *</label>
+            <select class="sel" id="pay-yr"><option value="2024-25">2024–25</option><option value="2023-24">2023–24</option></select>
+          </div>
+          <div class="field"><label>Amount (₹) *</label><input class="inp" id="pay-amount" type="number" placeholder="45000"></div>
+          <div class="field"><label>Payment Mode *</label>
+            <select class="sel" id="pay-mode">
+              <option value="Cash">💵 Cash</option><option value="Online">🌐 Online</option>
+              <option value="UPI">📱 UPI</option><option value="NEFT">🏦 NEFT</option>
+              <option value="DD">📄 DD</option><option value="Cheque">📝 Cheque</option>
+            </select>
+          </div>
+          <div class="field"><label>Transaction Ref</label><input class="inp" id="pay-ref" type="text" placeholder="Optional"></div>
+        </div>
+        <div class="modal-err" id="payErr"></div>
+        <div class="modal-ok" id="payOk"></div>
+        <button class="btn primary" onclick="recordPayment()">💾 Record Payment</button>
+      </div>
+    </div>
+
+    <!-- ══ AI ASSISTANT ══ -->
+    <div class="panel" id="chatPanel" style="padding-bottom:0">
+      <div class="panel-hdr" style="flex-shrink:0"><h2>🤖 AI <em>Assistant</em></h2></div>
+      <div class="chat-wrap">
+        <div class="chat-msgs" id="chatMsgs">
+          <div style="text-align:center;padding:32px;color:var(--muted);font-size:13px">
+            🤖 Hello Admin! I can help you with fee analysis, student reports, drafting announcements, answering policy questions, and more.
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-inp" id="chatInp" placeholder="Ask anything — fee analysis, student queries, draft announcements…" rows="1"
+            onkeydown="chatKey(event)" oninput="autoR(this)"></textarea>
+          <button class="chat-send" onclick="sendAdminChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ RESET PASSWORD MODAL ══ -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>🔑 Reset <em>Password</em></h3>
+    <p style="color:var(--muted2);font-size:13px">Reset password for: <strong id="resetStudentName">—</strong></p>
+    <div class="field"><label>New Password</label>
+      <div class="pw-wrap"><input class="inp" id="resetPw" type="password" placeholder="Min 8 characters"><button class="pw-eye" onclick="togglePwById('resetPw')">👁️</button></div>
+    </div>
+    <div class="modal-err" id="resetErr"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeResetModal()">Cancel</button>
+      <button class="btn primary" onclick="doResetPassword()">✅ Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════ */
+// Auto-detect backend URL — works on localhost AND network IPs (e.g. 10.x.x.x)
+const BACKEND = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : `http://${window.location.hostname}:5000`;
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let ADMIN_TOKEN = '';
+let ADMIN_INFO = null;
+let allStudents = [];
+let resetStudentId = null;
+let adminChatHistory = [];
+
+/* ═══════════════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════════════ */
+function togglePw(){ const i=document.getElementById('adminPass'); i.type=i.type==='password'?'text':'password'; }
+function togglePwById(id){ const i=document.getElementById(id); i.type=i.type==='password'?'text':'password'; }
+
+document.getElementById('adminUser').addEventListener('keydown',e=>{if(e.key==='Enter') document.getElementById('adminPass').focus();});
+document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter') doAdminLogin();});
+
+async function doAdminLogin(){
+  const u=document.getElementById('adminUser').value.trim();
+  const p=document.getElementById('adminPass').value;
+  const err=document.getElementById('loginErr');
+  const btn=document.getElementById('loginBtn');
+  if(!u||!p){showErr(err,'Enter username and password.');return;}
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span> Signing in…';
+  try{
+    let r, d;
+    try {
+      r = await fetch(`${BACKEND}/api/admin/login`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: u, password: p})
+      });
+    } catch(netErr) {
+      showErr(err, `Cannot reach server at ${BACKEND}. Make sure Flask is running: python app.py`);
+      return;
+    }
+    try { d = await r.json(); }
+    catch(jsonErr) {
+      showErr(err, `Server error (status ${r.status}). Check Flask console for errors.`);
+      return;
+    }
+    if(!r.ok){ showErr(err, d.error || `Login failed (${r.status})`); return; }
+    ADMIN_TOKEN=d.token; ADMIN_INFO=d.admin;
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminLabel').textContent=ADMIN_INFO.username+' · Admin';
+    loadDashboard();
+    loadStudents();
+    loadFeeRecords();
+    loadAnnouncements();
+  }catch(e){ showErr(err, '⚠️ Unexpected error: ' + e.message); }
+  finally{btn.disabled=false;btn.innerHTML='🔐 Sign In as Admin';}
+}
+
+function doLogout(){if(confirm('Sign out?')){ADMIN_TOKEN='';ADMIN_INFO=null;document.getElementById('loginScreen').style.display='flex';document.getElementById('adminUser').value='';document.getElementById('adminPass').value='';}}
+
+function showErr(el,msg){el.textContent='⚠️ '+msg;el.style.display='block';}
+function showOk(el,msg){el.textContent='✅ '+msg;el.style.display='block';}
+function hideMsg(el){el.style.display='none';}
+
+/* ═══════════════════════════════════════════════
+   API HELPER
+═══════════════════════════════════════════════ */
+async function api(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ADMIN_TOKEN}
+  };
+  if (body) opts.body = JSON.stringify(body);
+  let r;
+  try {
+    r = await fetch(BACKEND + path, opts);
+  } catch (netErr) {
+    throw new Error(`Cannot reach server at ${BACKEND}. Is Flask running? (python app.py)`);
+  }
+  let d;
+  try {
+    d = await r.json();
+  } catch (jsonErr) {
+    const text = await r.text().catch(() => '');
+    throw new Error(`Server returned non-JSON (${r.status}): ${text.slice(0, 100)}`);
+  }
+  if (!r.ok) throw new Error(d.error || `Server error ${r.status}`);
+  return d;
+}
+
+/* ═══════════════════════════════════════════════
+   PANEL ROUTING
+═══════════════════════════════════════════════ */
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.snav').forEach(b=>b.classList.remove('active'));
+  document.getElementById(name+'Panel').classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+const INR=n=>'₹'+Number(n||0).toLocaleString('en-IN');
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════════ */
+async function loadDashboard(){
+  try{
+    const s=await api('/api/admin/stats');
+    document.getElementById('ds-total').textContent=s.totalStudents;
+    document.getElementById('ds-paid').textContent=INR(s.totalPaid);
+    document.getElementById('ds-due').textContent=INR(s.totalDue);
+    document.getElementById('ds-pct').textContent=s.paidCount+' / '+s.totalStudents;
+  }catch(e){console.error(e);}
+  // Fee summary table
+  try{
+    const rows=await api('/api/admin/fees/all');
+    const bc=s=>s==='Paid'?'b-paid':s==='Partial'?'b-partial':s==='No Demand'?'b-info':'b-unpaid';
+    document.getElementById('dashFeeTable').innerHTML=rows.slice(0,10).map(r=>`
+      <tr>
+        <td class="mono">${r.roll_no}</td>
+        <td>${r.full_name}</td>
+        <td><span class="badge b-info">${r.department}</span></td>
+        <td class="mono">${INR(r.total_demanded)}</td>
+        <td class="mono" style="color:var(--emerald)">${INR(r.total_paid)}</td>
+        <td class="mono" style="color:${r.balance_due>0?'var(--rose)':'var(--emerald)'}">${INR(r.balance_due)}</td>
+        <td><span class="badge ${bc(r.payment_status)}">${r.payment_status}</span></td>
+      </tr>`).join('');
+  }catch(e){document.getElementById('dashFeeTable').innerHTML='<tr><td colspan="7" class="empty">Could not load fee data.</td></tr>';}
+  // Announcements
+  try{
+    const ann=await api('/api/admin/announcements');
+    const icons={info:'ℹ️',warning:'⚠️',success:'✅'};
+    document.getElementById('dashAnn').innerHTML=ann.slice(0,3).map(a=>`
+      <div class="ann-card">
+        <div class="ann-icon">${icons[a.type]||'ℹ️'}</div>
+        <div><div class="ann-title">${esc(a.title)}</div><div class="ann-body">${esc(a.body)}</div><div class="ann-meta">${a.date}</div></div>
+      </div>`).join('');
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   STUDENTS
+═══════════════════════════════════════════════ */
+async function loadStudents(){
+  try{
+    allStudents=await api('/api/admin/students');
+    renderStudentTable(allStudents);
+  }catch(e){document.getElementById('stuTable').innerHTML='<tr><td colspan="7" class="empty">Could not load students.</td></tr>';}
+}
+
+function filterStudents(){
+  const search=document.getElementById('stuSearch').value.toLowerCase();
+  const dept=document.getElementById('stuDept').value;
+  let filtered=allStudents;
+  if(dept) filtered=filtered.filter(s=>s.department===dept);
+  if(search) filtered=filtered.filter(s=>s.roll_no.toLowerCase().includes(search)||s.full_name.toLowerCase().includes(search)||s.email.toLowerCase().includes(search));
+  renderStudentTable(filtered);
+}
+
+function renderStudentTable(rows){
+  if(!rows.length){document.getElementById('stuTable').innerHTML='<tr><td colspan="7" class="empty">No students found.</td></tr>';return;}
+  document.getElementById('stuTable').innerHTML=rows.map(s=>`
+    <tr>
+      <td class="mono" style="color:var(--gold)">${s.roll_no}</td>
+      <td>${esc(s.full_name)}</td>
+      <td><span class="badge b-info">${s.department}</span></td>
+      <td class="mono">Sem ${s.semester}</td>
+      <td style="font-size:12px;color:var(--muted2)">${esc(s.email)}</td>
+      <td><span class="badge ${s.is_active?'b-active':'b-inactive'}">${s.is_active?'Active':'Inactive'}</span></td>
+      <td>
+        <button class="tbl-action" onclick="openResetModal(${s.id},'${esc(s.full_name)}')">🔑 Reset PW</button>
+        <button class="tbl-action ${s.is_active?'danger':''}" onclick="toggleStudent(${s.id})">${s.is_active?'Deactivate':'Activate'}</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function toggleStudent(id){
+  if(!confirm('Toggle student status?')) return;
+  try{ await api(`/api/admin/students/${id}/toggle`,'PATCH'); await loadStudents(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+
+/* ═══════════════════════════════════════════════
+   ADD STUDENT
+═══════════════════════════════════════════════ */
+async function addStudent(){
+  const err=document.getElementById('nsErr');
+  const ok=document.getElementById('nsOk');
+  hideMsg(err); hideMsg(ok);
+  const body={
+    roll_no:document.getElementById('ns-roll').value.trim(),
+    full_name:document.getElementById('ns-name').value.trim(),
+    email:document.getElementById('ns-email').value.trim(),
+    phone:document.getElementById('ns-phone').value.trim(),
+    department:document.getElementById('ns-dept').value,
+    program:document.getElementById('ns-prog').value,
+    semester:parseInt(document.getElementById('ns-sem').value),
+    academic_year:document.getElementById('ns-yr').value,
+    password:document.getElementById('ns-pw').value,
+  };
+  if(!body.roll_no||!body.full_name||!body.email||!body.password){showErr(err,'Please fill all required fields.');return;}
+  if(body.password.length<8){showErr(err,'Password must be at least 8 characters.');return;}
+  try{
+    await api('/api/admin/students','POST',body);
+    showOk(ok,'Student added successfully!');
+    clearAddForm(); await loadStudents();
+  }catch(e){showErr(err,e.message);}
+}
+
+function clearAddForm(){
+  ['ns-roll','ns-name','ns-email','ns-phone','ns-pw'].forEach(id=>document.getElementById(id).value='');
+  hideMsg(document.getElementById('nsErr')); hideMsg(document.getElementById('nsOk'));
+}
+
+/* ═══════════════════════════════════════════════
+   RESET PASSWORD MODAL
+═══════════════════════════════════════════════ */
+function openResetModal(id,name){
+  resetStudentId=id;
+  document.getElementById('resetStudentName').textContent=name;
+  document.getElementById('resetPw').value='';
+  hideMsg(document.getElementById('resetErr'));
+  document.getElementById('resetModal').classList.add('open');
+}
+function closeResetModal(){document.getElementById('resetModal').classList.remove('open');}
+
+async function doResetPassword(){
+  const pw=document.getElementById('resetPw').value;
+  const err=document.getElementById('resetErr');
+  if(!pw||pw.length<8){showErr(err,'Password must be 8+ characters.');return;}
+  try{
+    await api(`/api/admin/students/${resetStudentId}/reset-password`,'PATCH',{new_password:pw});
+    closeResetModal(); alert('✅ Password reset successfully.');
+  }catch(e){showErr(err,e.message);}
+}
+
+/* ═══════════════════════════════════════════════
+   FEE RECORDS
+═══════════════════════════════════════════════ */
+async function loadFeeRecords(){
+  const yr=document.getElementById('feeYr').value;
+  try{
+    const rows=await api('/api/admin/fees/all');
+    const bc=s=>s==='Paid'?'b-paid':s==='Partial'?'b-partial':s==='No Demand'?'b-info':'b-unpaid';
+    document.getElementById('feeTable').innerHTML=rows.map(r=>`
+      <tr>
+        <td class="mono" style="color:var(--gold)">${r.roll_no}</td>
+        <td>${esc(r.full_name)}</td>
+        <td><span class="badge b-info">${r.department}</span></td>
+        <td class="mono">${INR(r.total_demanded)}</td>
+        <td class="mono" style="color:var(--emerald)">${INR(r.total_paid)}</td>
+        <td class="mono" style="color:${r.balance_due>0?'var(--rose)':'var(--emerald)'}">${INR(r.balance_due)}</td>
+        <td><span class="badge ${bc(r.payment_status)}">${r.payment_status}</span></td>
+        <td><button class="tbl-action" onclick="prefillPayment('${r.roll_no}')">+ Pay</button></td>
+      </tr>`).join('');
+  }catch(e){document.getElementById('feeTable').innerHTML='<tr><td colspan="8" class="empty">Could not load records.</td></tr>';}
+}
+
+function prefillPayment(roll){
+  showPanel('payment',document.getElementById('nav-payment'));
+  document.getElementById('pay-roll').value=roll;
+  lookupStudent();
+}
+
+/* ═══════════════════════════════════════════════
+   RECORD PAYMENT
+═══════════════════════════════════════════════ */
+let payStudentId=null;
+
+async function lookupStudent(){
+  const roll=document.getElementById('pay-roll').value.trim().toUpperCase();
+  const info=document.getElementById('pay-student-info');
+  if(roll.length<4){info.style.display='none';payStudentId=null;return;}
+  const s=allStudents.find(x=>x.roll_no===roll);
+  if(s){
+    payStudentId=s.id;
+    info.style.display='block';
+    info.innerHTML=`<strong>${esc(s.full_name)}</strong> · ${s.department} Sem ${s.semester} · <span style="color:var(--muted)">${esc(s.email)}</span>`;
+    info.style.color='var(--emerald)';
+  } else {
+    payStudentId=null;
+    info.style.display='block';
+    info.textContent='Student not found.';
+    info.style.color='var(--rose)';
+  }
+}
+
+async function recordPayment(){
+  const err=document.getElementById('payErr');
+  const ok=document.getElementById('payOk');
+  hideMsg(err); hideMsg(ok);
+  if(!payStudentId){showErr(err,'Student not found. Check roll number.');return;}
+  const amt=parseFloat(document.getElementById('pay-amount').value);
+  if(!amt||amt<=0){showErr(err,'Enter a valid amount.');return;}
+  const body={
+    student_id:payStudentId,
+    fee_type_code:document.getElementById('pay-type').value,
+    academic_year:document.getElementById('pay-yr').value,
+    amount_paid:amt,
+    payment_mode:document.getElementById('pay-mode').value,
+    transaction_ref:document.getElementById('pay-ref').value.trim()||null,
+  };
+  try{
+    const d=await api('/api/admin/fees/record-payment','POST',body);
+    showOk(ok,`Payment recorded! Receipt: ${d.receipt_no}`);
+    document.getElementById('pay-amount').value='';
+    document.getElementById('pay-ref').value='';
+    await loadFeeRecords();
+  }catch(e){showErr(err,e.message);}
+}
+
+/* ═══════════════════════════════════════════════
+   ANNOUNCEMENTS
+═══════════════════════════════════════════════ */
+async function loadAnnouncements(){
+  try{
+    const anns=await api('/api/admin/announcements');
+    const icons={info:'ℹ️',warning:'⚠️',success:'✅'};
+    document.getElementById('annList').innerHTML=anns.length
+      ?anns.map(a=>`
+        <div class="ann-card">
+          <div class="ann-icon">${icons[a.type]||'ℹ️'}</div>
+          <div style="flex:1">
+            <div class="ann-title">${esc(a.title)}</div>
+            <div class="ann-body">${esc(a.body)}</div>
+            <div class="ann-meta">${a.date} · <span class="badge ${a.type==='warning'?'b-warn':'b-info'}">${a.type}</span></div>
+          </div>
+          <button class="ann-del" onclick="deleteAnn(${a.id})">🗑</button>
+        </div>`).join('')
+      :'<div class="empty">No announcements.</div>';
+  }catch(e){}
+}
+
+async function postAnn(){
+  const err=document.getElementById('annErr');
+  const ok=document.getElementById('annOk');
+  hideMsg(err); hideMsg(ok);
+  const title=document.getElementById('annTitle').value.trim();
+  const body=document.getElementById('annBody').value.trim();
+  const type=document.getElementById('annType').value;
+  if(!title||!body){showErr(err,'Title and message are required.');return;}
+  try{
+    await api('/api/admin/announcements','POST',{title,body,type});
+    showOk(ok,'Announcement posted!');
+    document.getElementById('annTitle').value='';
+    document.getElementById('annBody').value='';
+    await loadAnnouncements();
+  }catch(e){showErr(err,e.message);}
+}
+
+async function deleteAnn(id){
+  if(!confirm('Delete this announcement?')) return;
+  try{ await api(`/api/admin/announcements/${id}`,'DELETE'); await loadAnnouncements(); }
+  catch(e){ alert('Error: '+e.message); }
+}
+
+/* ═══════════════════════════════════════════════
+   ADMIN AI CHAT
+═══════════════════════════════════════════════ */
+const ADMIN_SYS=`You are an intelligent admin assistant for ABC Engineering College, Trichy.
+You help college administrators with:
+- Drafting announcements, notices, and official communications
+- Fee analysis and reporting
+- Student management queries  
+- College policy questions
+- Data interpretation and summaries
+Be professional, concise, and accurate. Format responses clearly.`;
+
+async function sendAdminChat(){
+  const inp=document.getElementById('chatInp');
+  const text=inp.value.trim();
+  if(!text) return;
+  inp.value=''; inp.style.height='auto';
+  addChatMsg(text,'user');
+  const typEl=addChatMsg('<span class="spin"></span> Thinking…','bot',true);
+  adminChatHistory.push({role:'user',content:text});
+  try{
+    const r=await fetch(`${BACKEND}/api/admin/chat`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_TOKEN},
+      body:JSON.stringify({system:ADMIN_SYS,messages:adminChatHistory})
+    });
+    if(!r.ok) throw new Error('Chat error');
+    const d=await r.json();
+    const reply=d.content?.[0]?.text||'No response.';
+    adminChatHistory.push({role:'assistant',content:reply});
+    if(adminChatHistory.length>20) adminChatHistory=adminChatHistory.slice(-20);
+    typEl.innerHTML=formatMsg(reply);
+  }catch(e){typEl.innerHTML='<span style="color:var(--rose)">⚠️ '+esc(e.message)+'</span>';}
+}
+
+function addChatMsg(text,who,isHTML=false){
+  const d=document.createElement('div');d.className='cmsg '+who;
+  const av=`<div class="cav" style="${who==='bot'?'background:linear-gradient(135deg,var(--gold),var(--violet))':'background:var(--s3);border:1px solid var(--border)'}">${who==='bot'?'🏛️':'👤'}</div>`;
+  const bubble=document.createElement('div');bubble.className='cbubble';
+  if(isHTML)bubble.innerHTML=text;else bubble.textContent=text;
+  d.innerHTML=av;d.appendChild(bubble);
+  const msgs=document.getElementById('chatMsgs');
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+  return bubble;
+}
+
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAdminChat();}}
+function autoR(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+function formatMsg(text){
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/`(.*?)`/g,'<code style="background:var(--s3);padding:1px 5px;border-radius:4px;font-size:12px">$1</code>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>
