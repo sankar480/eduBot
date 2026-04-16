@@ -47,7 +47,7 @@ CORS_ORIGIN      = os.getenv("CORS_ORIGIN",       "*")
 SUPABASE_DB_URL  = os.getenv("SUPABASE_DB_URL", "")   # full postgres URL
 # OR individual fields: 
 PG_HOST = os.getenv("SUPABASE_HOST", os.getenv("DB_HOST", "localhost"))
-PG_PORT = int(os.getenv("SUPABASE_PORT", os.getenv("DB_PORT", 5432)))
+PG_PORT = int(os.getenv("SUPABASE_PORT", os.getenv("DB_PORT", 6543)))
 PG_USER = os.getenv("SUPABASE_USER", os.getenv("DB_USER", "postgres"))
 PG_PASS = os.getenv("SUPABASE_PASS", os.getenv("DB_PASS", ""))
 PG_NAME = os.getenv("SUPABASE_DB",   os.getenv("DB_NAME", "postgres"))
