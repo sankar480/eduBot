@@ -786,10 +786,10 @@ header{position:relative;z-index:50;display:flex;align-items:center;
 /* ═══════════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════════ */
-// Auto-detect backend URL — works on localhost AND network IPs
-const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+// Auto-detect backend URL — works on localhost AND Render/production
+const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000'
-  : `http://${window.location.hostname}:5000`;
+  : `${window.location.protocol}//${window.location.hostname}`;
 
 /* ═══════════════════════════════════════════════
    STATE
@@ -844,7 +844,7 @@ async function doLogin(){
     if (msg.includes('fetch') || msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
       showErr(errEl, `Cannot reach Flask at ${BACKEND_URL} — run: python app.py`);
     } else if (msg.includes('Load failed')) {
-      showErr(errEl, `Connection blocked. Open via http://${window.location.hostname}:5000 (not as a file)`);
+      showErr(errEl, `Connection blocked. Open via ${window.location.protocol}//${window.location.hostname} (not as a file)`);
     } else {
       showErr(errEl, msg || 'Unknown error — check Flask terminal');
     }
