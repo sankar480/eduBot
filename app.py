@@ -45,28 +45,7 @@ CORS_ORIGIN      = os.getenv("CORS_ORIGIN",       "*")
 
 # ── Supabase / PostgreSQL connection ─────────────────────────
 SUPABASE_DB_URL  = os.getenv("SUPABASE_DB_URL", "")   # full postgres URL
-
-# Auto-fix: replace direct IPv6 host with IPv4 session pooler
-# Render free tier does NOT support IPv6 — must use Supabase pooler
-import re as _re
-def _fix_supabase_url(url):
-    if not url:
-        return url
-    # Replace db.<ref>.supabase.co with IPv4 pooler
-    url = _re.sub(r"@db\.[a-z0-9]+\.supabase\.co", "@aws-0-ap-south-1.pooler.supabase.com", url)
-    # Fix username to postgres.<ref> format required by pooler
-    ref = _re.search(r"//postgres:.*@.*\.pooler\.supabase\.com", url)
-    proj = _re.search(r"tnfqibiaobzrtrqcuhnh|([a-z0-9]{20})", url)
-    if proj and "//postgres." not in url:
-        url = url.replace("//postgres:", f"//postgres.{proj.group(0)}:", 1)
-    # Ensure sslmode=require
-    if "sslmode" not in url:
-        url += "?sslmode=require" if "?" not in url else "&sslmode=require"
-    return url
-
-SUPABASE_DB_URL = _fix_supabase_url(SUPABASE_DB_URL)
-
-# OR individual fields:
+# OR individual fields: 
 PG_HOST = os.getenv("SUPABASE_HOST", os.getenv("DB_HOST", "localhost"))
 PG_PORT = int(os.getenv("SUPABASE_PORT", os.getenv("DB_PORT", 5432)))
 PG_USER = os.getenv("SUPABASE_USER", os.getenv("DB_USER", "postgres"))
@@ -100,8 +79,8 @@ def get_db():
     if "db" not in g:
         try:
             if SUPABASE_DB_URL:
-                # Full URL already has sslmode baked in via _fix_supabase_url()
-                g.db = psycopg2.connect(SUPABASE_DB_URL)
+                # Full URL: postgres://user:pass@host:port/db
+                g.db = psycopg2.connect(SUPABASE_DB_URL, sslmode="require")
             else:
                 g.db = psycopg2.connect(
                     host=PG_HOST, port=PG_PORT,
@@ -858,7 +837,7 @@ if __name__ == "__main__":
     try:
         import psycopg2
         if SUPABASE_DB_URL:
-            conn = psycopg2.connect(SUPABASE_DB_URL)
+            conn = psycopg2.connect(SUPABASE_DB_URL, sslmode="require")
         else:
             conn = psycopg2.connect(host=PG_HOST,port=PG_PORT,user=PG_USER,
                                      password=PG_PASS,dbname=PG_NAME,
