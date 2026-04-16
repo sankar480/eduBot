@@ -475,10 +475,10 @@ header{position:relative;z-index:50;display:flex;align-items:center;justify-cont
 /* ═══════════════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════════════ */
-// Auto-detect backend URL — works on localhost AND network IPs (e.g. 10.x.x.x)
-const BACKEND = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+// Auto-detect backend URL — works on localhost AND Render/production
+const BACKEND = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000'
-  : `http://${window.location.hostname}:5000`;
+  : `${window.location.protocol}//${window.location.hostname}`;
 
 /* ═══════════════════════════════════════════════
    STATE
