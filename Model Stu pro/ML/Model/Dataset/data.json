@@ -1,0 +1,38 @@
+{
+    "admissions": {
+      "tags": ["admission", "apply", "eligibility", "documents", "cutoff", "enrollment", "entrance"],
+      "html": "<strong>📋 Admission Information</strong><br><br><div class=\"info-card\"><h4>🎯 Eligibility</h4><table><tr><td>UG Programs</td><td>10+2 with min 60%</td></tr><tr><td>PG Programs</td><td>UG degree with 55%</td></tr><tr><td>PhD</td><td>PG 60% + NET/GATE</td></tr></table></div><div class=\"info-card\"><h4>📄 Documents Required</h4><ul><li>10th &amp; 12th Mark Sheets + TC</li><li>Conduct Certificate</li><li>Community Certificate (if applicable)</li><li>Aadhar Card · Photos (4 copies)</li></ul></div><span class=\"tag\">Deadline: June 30, 2025</span><span class=\"tag\">Online + Offline</span><br><br>Portal: <strong>admissions.college.edu.in</strong> | 📞 0431-2345678"
+    },
+    "fees": {
+      "tags": ["fee", "fees", "tuition", "payment", "scholarship", "challan", "due", "cost", "amount", "pay"],
+      "html": "<strong>💳 Fee Structure 2024–25</strong><br><br><div class=\"info-card\"><h4>🎓 Annual Fee Breakup (UG)</h4><table><tr><td>Tuition Fee</td><td>₹45,000/yr</td></tr><tr><td>Examination Fee</td><td>₹2,500/sem</td></tr><tr><td>Library Fee</td><td>₹1,200/yr</td></tr><tr><td>Lab Fee</td><td>₹3,000/yr</td></tr><tr><td>Hostel</td><td>₹36,000/yr</td></tr><tr><td>Bus Pass</td><td>₹8,000–18,000/yr</td></tr></table></div><div class=\"info-card\"><h4>🏷️ Scholarships</h4><ul><li>Government Merit (≥85%)</li><li>SC/ST/OBC (up to 100%)</li><li>Sports Quota · Management Need-based</li></ul></div><span class=\"tag\">Due: 30 days</span><span class=\"tag\">Late Fine: ₹50/day</span><br><br>💡 Log in and check <em>My Fees</em> for your personal payment status!"
+    },
+    "timetable": {
+      "tags": ["timetable", "time table", "schedule", "class", "period", "timing", "lecture", "cse timetable"],
+      "html": "<strong>🗓️ CSE Dept Timetable — Sem V</strong><br><br><div class=\"info-card\"><h4>📅 Weekly Schedule</h4><table><tr><td><b>Day</b></td><td><b>9–10</b></td><td><b>10–11</b></td><td><b>11–12</b></td><td><b>2–3</b></td><td><b>3–4</b></td></tr><tr><td>Mon</td><td>OS</td><td>CN</td><td>DS</td><td>CN Lab</td><td>CN Lab</td></tr><tr><td>Tue</td><td>ML</td><td>OS</td><td>Web</td><td>DS Lab</td><td>DS Lab</td></tr><tr><td>Wed</td><td>CN</td><td>ML</td><td>OS</td><td>Library</td><td>—</td></tr><tr><td>Thu</td><td>Web</td><td>DS</td><td>ML</td><td>ML Lab</td><td>ML Lab</td></tr><tr><td>Fri</td><td>DS</td><td>Web</td><td>CN</td><td>Seminar</td><td>—</td></tr></table></div><span class=\"tag\">OS</span><span class=\"tag\">CN</span><span class=\"tag\">DS</span><span class=\"tag\">ML</span><br><br><hr><br><strong>🗓️ CSE Dept Timetable — Sem II</strong><br><br><div class=\"info-card\"><h4>📅 Weekly Schedule</h4><table><tr><td><b>Day</b></td><td><b>9–10</b></td><td><b>10–11</b></td><td><b>11–12</b></td><td><b>2–3</b></td><td><b>3–4</b></td></tr><tr><td>Mon</td><td>Maths II</td><td>Physics</td><td>C Programming</td><td>C Lab</td><td>C Lab</td></tr><tr><td>Tue</td><td>English</td><td>Maths II</td><td>Physics</td><td>Physics Lab</td><td>Physics Lab</td></tr><tr><td>Wed</td><td>C Programming</td><td>English</td><td>Maths II</td><td>Library</td><td>—</td></tr><tr><td>Thu</td><td>Physics</td><td>C Programming</td><td>English</td><td>Workshop</td><td>Workshop</td></tr><tr><td>Fri</td><td>Maths II</td><td>Physics</td><td>C Programming</td><td>Seminar</td><td>—</td></tr></table></div><span class=\"tag\">Maths II</span><span class=\"tag\">Physics</span><span class=\"tag\">C Programming</span><span class=\"tag\">English</span>"
+    },
+    "exams": {
+      "tags": ["exam", "examination", "hall ticket", "results", "grade", "marks", "internal", "revaluation", "arrear"],
+      "html": "<strong>📝 Examination Schedule</strong><br><br><div class=\"info-card\"><h4>📆 Exam Calendar 2024–25</h4><table><tr><td>Internal 1</td><td>Aug 12–16, 2024</td></tr><tr><td>Internal 2</td><td>Oct 7–11, 2024</td></tr><tr><td>Model Exam</td><td>Nov 18–25, 2024</td></tr><tr><td>Semester End</td><td>Dec 2–20, 2024</td></tr><tr><td>Results</td><td>Jan 15, 2025</td></tr></table></div><div class=\"info-card\"><h4>🎟️ Hall Ticket</h4><ul><li>Released 5 days before exams</li><li>examportal.college.edu.in</li><li>Bring hall ticket + college ID</li></ul></div><span class=\"tag\">Min attendance: 75%</span><span class=\"tag\">Revaluation: ₹250/paper</span>"
+    },
+    "faq": {
+      "tags": ["faq", "help", "bonafide", "leave", "transcript", "migration", "working hours"],
+      "html": "<strong>❓ FAQ</strong><br><br><strong>Working hours?</strong> Mon–Fri 8–5, Sat 8–1<br><br><strong>Bonafide certificate?</strong> Admin Block A, Room 101 · Fee: ₹50 · 2–3 days<br><br><strong>Attendance?</strong> Minimum <strong>75%</strong> required, below 65% = barred from exams<br><br><strong>Transcripts / Migration?</strong> Exam section · ₹200 · 7 working days<br><br><span class=\"tag\">📞 0431-2345678</span><span class=\"tag\">📧 admin@college.edu.in</span>"
+    },
+    "hostel": {
+      "tags": ["hostel", "accommodation", "room", "mess", "warden", "curfew", "food", "stay"],
+      "html": "<strong>🏠 Hostel Facilities</strong><br><br><div class=\"info-card\"><h4>🛏️ Details</h4><table><tr><td>Boys</td><td>H1 &amp; H2 — 400 seats</td></tr><tr><td>Girls</td><td>H3 &amp; H4 — 300 seats</td></tr><tr><td>Single Room</td><td>₹45,000/yr</td></tr><tr><td>Double Room</td><td>₹36,000/yr</td></tr><tr><td>Mess</td><td>₹24,000/yr · 3 meals/day</td></tr><tr><td>Curfew</td><td>Boys 10 PM · Girls 9 PM</td></tr></table></div>✅ Wi-Fi · 24/7 Security · Laundry · Gym · CCTV"
+    },
+    "library": {
+      "tags": ["library", "book", "borrow", "issue", "return", "reading", "nptel"],
+      "html": "<strong>📚 Library</strong><br><br><div class=\"info-card\"><h4>🕒 Timings</h4><table><tr><td>Mon–Fri</td><td>8 AM – 8 PM</td></tr><tr><td>Saturday</td><td>9 AM – 5 PM</td></tr><tr><td>Sunday</td><td>10 AM – 2 PM</td></tr></table></div><div class=\"info-card\"><h4>📖 Borrowing</h4><ul><li>UG: 3 books / 14 days</li><li>PG: 5 books / 21 days</li><li>Fine: ₹2/day overdue</li></ul></div><span class=\"tag\">50,000+ Books</span><span class=\"tag\">NPTEL</span><span class=\"tag\">Shodhganga</span>"
+    },
+    "placements": {
+      "tags": ["placement", "job", "company", "internship", "recruit", "salary", "package", "career"],
+      "html": "<strong>💼 Placement Cell</strong><br><br><div class=\"info-card\"><h4>📊 Stats 2023–24</h4><table><tr><td>Students Placed</td><td>892 / 1050</td></tr><tr><td>Highest Package</td><td>₹28 LPA (Google)</td></tr><tr><td>Average Package</td><td>₹6.5 LPA</td></tr><tr><td>Companies Visited</td><td>120+</td></tr></table></div>🏢 TCS · Infosys · Wipro · Zoho · Amazon · Google<br><br><strong>📌 Next Drive:</strong> Infosys — Nov 15, 2024<br>Register: <strong>placements.college.edu.in</strong>"
+    },
+    "contact": {
+      "tags": ["contact", "phone", "email", "address", "reach", "office"],
+      "html": "<strong>📞 Contact Information</strong><br><br><div class=\"info-card\"><h4>🏛️ Key Contacts</h4><table><tr><td>Principal</td><td>principal@college.edu.in | Ext: 100</td></tr><tr><td>Admissions</td><td>0431-2345678</td></tr><tr><td>Fees Counter</td><td>fees@college.edu.in | Ext: 205</td></tr><tr><td>Hostel</td><td>hostel@college.edu.in | Ext: 300</td></tr><tr><td>Placements</td><td>0431-2345690</td></tr></table></div>📍 123 College Road, Trichy – 620021, Tamil Nadu<br>🌐 www.college.edu.in"
+    }
+  }
